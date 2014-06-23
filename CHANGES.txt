@@ -1,4 +1,4 @@
-Release 3.4.5 - 2012-09-30
+Release 3.4.5 - Modified by ACaZoo Team! - 23-06-2014
 
 Backward compatible changes:
 
