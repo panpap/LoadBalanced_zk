@@ -286,7 +286,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			String[] childNames = children.toArray(new String[children.size()]);
 			String childData="";
 			long min=this.cnxionState;
-			InetSocketAddress whoisLazy = this.getServerCnxnFactory().getLocalAddress();
+			InetSocketAddress whoisLazy = new InetSocketAddress("10.254.1.2",2181);
 			//panpap: find the most lazy server 
 			for(int i=0;i<childNames.length;i++)
 			{
@@ -294,13 +294,13 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				if(min>Long.parseLong(childData))
 				{
 					min=Long.parseLong(childData);
-					whoisLazy=this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
+					whoisLazy = this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
 					if(Long.parseLong(childNames[i].split("Server")[1])==1)
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
+						whoisLazy = new InetSocketAddress("10.254.1.2",2181);
 					else if(Long.parseLong(childNames[i].split("Server")[1])==2)
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),3182);
+						whoisLazy = new InetSocketAddress("10.254.1.4",2181);
 					else
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),3182);
+						whoisLazy = new InetSocketAddress("10.254.1.5",2181);
 				}
 				//TODO: get whoisLazy client port
 				LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
