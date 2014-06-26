@@ -302,7 +302,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 					else
 						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
-					System.out.println("\n\n\u001B[31m"+whoisLazY+"\u001B[0m\n\n");
+					System.out.println("\n\n\u001B[31m"+whoisLazy+"\u001B[0m\n\n");
 				}
 				//TODO: get whoisLazy client port
 				LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
