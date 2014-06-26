@@ -309,7 +309,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				else
 					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
 				
-parts=whoisLazy.split(".");
+String[] parts=whoisLazy.split(".");
 whoisLazy=parts[0]+"."+parts[1]+"."+parts[2]+".4";
 System.out.println("\n\n\u001B[31m"+whoisLazy+" "+min+"\u001B[0m\n\n");
 			}
