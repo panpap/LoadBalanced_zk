@@ -295,14 +295,16 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				childData = new String(this.zkDb.dataTree.getNode(nodeName+"/"+childNames[i]).data, "UTF-8");
 				if(min>Long.parseLong(childData))
 				{
+					//panpap: this works only with 3 nodes 
 					min=Long.parseLong(childData);
 					whoisLazy=this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
-					if(Long.parseLong(childNames[i].split("Server")[1])==1)
+					/*if(Long.parseLong(childNames[i].split("Server")[1])==1)
 						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 					else if(Long.parseLong(childNames[i].split("Server")[1])==2)
 						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 					else
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
+						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
+					System.out.println("\n\n\u001B[31m"+whoisLaz+"\u001B[0m\n\n");
 				}
 				//TODO: get whoisLazy client port
 				LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
@@ -407,7 +409,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private String getMyStatusNodeData() throws UnsupportedEncodingException
     {
     	String stateNd="/state";
-    	System.out.println(this.getServerId());
+    	System.out.println("\n\nZZZZZZZZZZZZZZZZZZZZZZz\n\n"+this.getServerId());
     	return new String(this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId()).data, "UTF-8");
     }
     
