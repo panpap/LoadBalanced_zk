@@ -410,7 +410,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	DataNode node=this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId());
     	System.out.println(node);
 	if (node==null)
-		return node;
+		return null;
 	else
 	    	return new String(node.data, "UTF-8");
     }
