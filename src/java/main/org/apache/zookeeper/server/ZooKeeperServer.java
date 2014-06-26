@@ -339,11 +339,11 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			 }
 			// if(count==0)
 			 if(this.flag==true)
-			 {				 
-				 this.zkDb.dataTree.changeServerEvent(lazyClient,whoisLazy);
-				 System.out.println("\n\n\u001B[31mLAZY SERVER "+whoisLazy+" GET "+lazyClient+"\u001B[0m\n\n");
-				 count=10;
-				 flag=false;
+			 {		
+			 	System.out.println("\n\n\u001B[31mLAZY SERVER "+whoisLazy+" GET "+lazyClient+"\u001B[0m\n\n");
+				this.zkDb.dataTree.changeServerEvent(lazyClient,whoisLazy);
+				count=10;
+				flag=false;
 			 }
 			 else
 				 System.out.println("FALSE");
