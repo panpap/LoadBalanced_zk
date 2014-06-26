@@ -286,7 +286,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 		String[] childNames = children.toArray(new String[children.size()]);
 		String childData="";
 		long min=this.cnxionState;
-		InetSocketAddressw hoisLazy = this.getServerCnxnFactory().getLocalAddress();
+		InetSocketAddress whoisLazy = this.getServerCnxnFactory().getLocalAddress();
 		//panpap: find the most lazy server 
 		for(int i=0;i<childNames.length;i++)
 		{
