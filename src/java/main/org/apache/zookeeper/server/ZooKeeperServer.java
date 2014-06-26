@@ -308,14 +308,11 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 				else
 					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
-				
-String[] parts=whoisLazy.split(".");
-whoisLazy=parts[0]+"."+parts[1]+"."+parts[2]+".4";
-System.out.println("\n\n\u001B[31m"+whoisLazy+" "+min+"\u001B[0m\n\n");
 			}
 			//TODO: get whoisLazy client port
 			LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
 		 }
+		 System.out.println("\n\n\u001B[31m"+whoisLazy+" "+min+"\u001B[0m\n\n");
 		 if ((this.cnxionState-min) >= this.threshold)
 		 {
 			 //panpap: Get the connected clients and choose the Client that sent the less packets
