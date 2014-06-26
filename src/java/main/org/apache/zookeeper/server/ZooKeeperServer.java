@@ -274,14 +274,12 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	ArrayList<InetSocketAddress> clnWatchers=this.zkDb.dataTree.getWatchersAddress();
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
-    		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
+    		if((getMyStatusNodeData()==null)||(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size()))
     		{
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
     		}
     		System.out.println("\n\nPeriodic Load Balancer check: "+this.cnxionState);
-    		    	System.exit(0);
-
     		//panpap: Check if Load Balance is needed.
 			Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
 			LOG.info("panpap: Current state: ");
@@ -410,7 +408,11 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     {
     	String stateNd="/state";
     	System.out.println("\n\nZZZZZZZZZZZZZZZZZZZZZZz\n\n"+this.getServerId());
-    	return new String(this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId()).data, "UTF-8");
+    	DataNode node=this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId())
+	if (node==null)
+		return null;
+	else
+	    	return new String(node.data, "UTF-8");
     }
     
     /**
