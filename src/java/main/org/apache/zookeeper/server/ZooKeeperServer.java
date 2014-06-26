@@ -284,7 +284,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     			System.out.println("\n\n\u001B[31m"+Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
-    		}
+    		//}
     		System.out.println("\n\nPeriodic 10 sec Load Balancer check: "+this.cnxionState);
     		//panpap: Check if Load Balance is needed.
 		Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
@@ -338,16 +338,17 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				 //LOG.info("panpap: "+elem+" Pkts received "+minPackets);
 			 }
 			// if(count==0)
-			 if(this.flag==true)
+			// if(this.flag==true)
 			 {		
 			 	System.out.println("\n\n\u001B[31mLAZY SERVER "+whoisLazy+" GET "+lazyClient+"\u001B[0m\n\n");
 				this.zkDb.dataTree.changeServerEvent(lazyClient,whoisLazy);
 				count=10;
 				flag=false;
 			 }
-			 else
-				 System.out.println("FALSE");
+			 //else
+			//	 System.out.println("FALSE");
 			 count--;
+		 	}
 		 }
     	}
     }
