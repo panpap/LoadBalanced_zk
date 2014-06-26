@@ -280,6 +280,8 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     			updateState();
     		}
     		System.out.println("\n\nPeriodic Load Balancer check: "+this.cnxionState);
+    		    	System.exit(0);
+
     		//panpap: Check if Load Balance is needed.
 			Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
 			LOG.info("panpap: Current state: ");
@@ -298,9 +300,9 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 					if(Long.parseLong(childNames[i].split("Server")[1])==1)
 						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 					else if(Long.parseLong(childNames[i].split("Server")[1])==2)
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),3182);
+						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 					else
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),3182);
+						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
 				}
 				//TODO: get whoisLazy client port
 				LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
@@ -406,9 +408,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     {
     	String stateNd="/state";
     	System.out.println(this.getServerId());
-    	System.exit(0);
     	return new String(this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId()).data, "UTF-8");
-    	System.exit();
     }
     
     /**
