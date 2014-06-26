@@ -274,8 +274,12 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	ArrayList<InetSocketAddress> clnWatchers=this.zkDb.dataTree.getWatchersAddress();
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
-    		//if((getMyStatusNodeData()==null)||
-    		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())//)
+    		if(getMyStatusNodeData()==null)
+    		{
+    			updateState();
+    		}
+    		System.out.println("\n\n\u001B[31m"+Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
+    		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
     		{
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
