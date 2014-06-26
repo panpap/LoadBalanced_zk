@@ -405,7 +405,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private String getMyStatusNodeData() throws UnsupportedEncodingException
     {
     	String stateNd="/state";
-    	System.out.println(this.getServerId()).data, "UTF-8");
+    	System.out.println(this.getServerId());
     	System.exit();
     	return new String(this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId()).data, "UTF-8");
     	System.exit();
