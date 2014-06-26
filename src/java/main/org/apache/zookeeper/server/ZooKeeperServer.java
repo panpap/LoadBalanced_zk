@@ -281,68 +281,68 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     		}
     		System.out.println("\n\nPeriodic Load Balancer check: "+this.cnxionState);
     		//panpap: Check if Load Balance is needed.
-			Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
-			LOG.info("panpap: Current state: ");
-			String[] childNames = children.toArray(new String[children.size()]);
-			String childData="";
-			long min=this.cnxionState;
-			InetSocketAddress whoisLazy = this.getServerCnxnFactory().getLocalAddress();
-			//panpap: find the most lazy server 
-			for(int i=0;i<childNames.length;i++)
+		Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
+		LOG.info("panpap: Current state: ");
+		String[] childNames = children.toArray(new String[children.size()]);
+		String childData="";
+		long min=this.cnxionState;
+		InetSocketAddressw hoisLazy = this.getServerCnxnFactory().getLocalAddress();
+		//panpap: find the most lazy server 
+		for(int i=0;i<childNames.length;i++)
+		{
+			childData = new String(this.zkDb.dataTree.getNode(nodeName+"/"+childNames[i]).data, "UTF-8");
+			if(min>Long.parseLong(childData))
 			{
-				childData = new String(this.zkDb.dataTree.getNode(nodeName+"/"+childNames[i]).data, "UTF-8");
-				if(min>Long.parseLong(childData))
-				{
-					//panpap: this works only with 3 nodes 
-					min=Long.parseLong(childData);
-					whoisLazy=this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
-					/*if(Long.parseLong(childNames[i].split("Server")[1])==1)
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
-					else if(Long.parseLong(childNames[i].split("Server")[1])==2)
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
-					else
-						whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
-					System.out.println("\n\n\u001B[31m"+whoisLazy+"\u001B[0m\n\n");
-				}
-				//TODO: get whoisLazy client port
-				LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
-			 }
-			 if ((this.cnxionState-min) >= this.threshold)
+				//panpap: this works only with 3 nodes 
+				min=Long.parseLong(childData);
+				whoisLazy=this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
+				/*if(Long.parseLong(childNames[i].split("Server")[1])==1)
+					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
+				else if(Long.parseLong(childNames[i].split("Server")[1])==2)
+					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);
+				else
+					whoisLazy=new InetSocketAddress(whoisLazy.getAddress().getHostAddress(),2181);*/
+				System.out.println("\n\n\u001B[31m"+whoisLazy+"\u001B[0m\n\n");
+			}
+			//TODO: get whoisLazy client port
+			LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
+		 }
+		 if ((this.cnxionState-min) >= this.threshold)
+		 {
+			 //panpap: Get the connected clients and choose the Client that sent the less packets
+			 long minPackets=-1;
+			 InetSocketAddress lazyClient=null;
+			 //LOG.info("panpap: My current Watchers:");
+			 for(int i=0;i<this.cnxionState;i++)
 			 {
-				 //panpap: Get the connected clients and choose the Client that sent the less packets
-				 long minPackets=-1;
-				 InetSocketAddress lazyClient=null;
-				 //LOG.info("panpap: My current Watchers:");
-				 for(int i=0;i<this.cnxionState;i++)
+				 InetSocketAddress elem = clnWatchers.get(i);
+				 if((minPackets<0)&&(lazyClient==null))
 				 {
-					 InetSocketAddress elem = clnWatchers.get(i);
-					 if((minPackets<0)&&(lazyClient==null))
+					 minPackets=getClientsPkts(elem);
+					 lazyClient=clnWatchers.get(i);
+				 }
+				 else
+				 {
+					 if (minPackets>getClientsPkts(elem))
 					 {
 						 minPackets=getClientsPkts(elem);
 						 lazyClient=clnWatchers.get(i);
 					 }
-					 else
-					 {
-						 if (minPackets>getClientsPkts(elem))
-						 {
-							 minPackets=getClientsPkts(elem);
-							 lazyClient=clnWatchers.get(i);
-						 }
-					 }
-					 //LOG.info("panpap: "+elem+" Pkts received "+minPackets);
 				 }
-				// if(count==0)
-				 if(this.flag==true)
-				 {				 
-					 this.zkDb.dataTree.changeServerEvent(lazyClient,whoisLazy);
-					 System.out.println("\n\n\u001B[31mYOU LAZY ASSHOLE SERVER "+whoisLazy+" GET HIM "+lazyClient+"\u001B[0m\n\n");
-					 count=10;
-					 flag=false;
-				 }
-				 else
-					 System.out.println("FALSE");
-				 count--;
+				 //LOG.info("panpap: "+elem+" Pkts received "+minPackets);
 			 }
+			// if(count==0)
+			 if(this.flag==true)
+			 {				 
+				 this.zkDb.dataTree.changeServerEvent(lazyClient,whoisLazy);
+				 System.out.println("\n\n\u001B[31mLAZY SERVER "+whoisLazy+" GET "+lazyClient+"\u001B[0m\n\n");
+				 count=10;
+				 flag=false;
+			 }
+			 else
+				 System.out.println("FALSE");
+			 count--;
+		 }
     	}
     }
 
@@ -391,26 +391,26 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	if (theStatenode!=null && myId!=-1)
     	{
     		ZooQuorum zq = new ZooQuorum();
-			if (this.zkDb.dataTree.getNode(newnode)!=null)
-			{
-				zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
-				LOG.info("panpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients);
-			}
-			else
-			{				
-				LOG.info("panpap: state znode NOT FOUND... Ready to construct "+newnode);  
-        		zq.insertPersistent(newnode, clients.toString().getBytes());
-			}
+		if (this.zkDb.dataTree.getNode(newnode)!=null)
+		{
+			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
+			LOG.info("\u001B[31mpanpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients+"\u001B[0m");
+		}
+		else
+		{				
+			LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
+			zq.insertPersistent(newnode, clients.toString().getBytes());
+		}
     	}
     }
     
     private String getMyStatusNodeData() throws UnsupportedEncodingException
     {
     	String stateNd="/state";
-    	System.out.println("\n\nZZZZZZZZZZZZZZZZZZZZZZz\n\n"+this.getServerId());
     	DataNode node=this.zkDb.dataTree.getNode(stateNd+"/Server"+this.getServerId());
+    	System.out.println(node);
 	if (node==null)
-		return null;
+		return node;
 	else
 	    	return new String(node.data, "UTF-8");
     }
