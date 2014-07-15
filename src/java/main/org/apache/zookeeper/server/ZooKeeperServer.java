@@ -305,7 +305,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			childData = new String(this.zkDb.dataTree.getNode(nodeName+"/"+childNames[i]).data, "UTF-8");
 			if(min>Long.parseLong(childData))
 			{
-				//panpap: this works only with 3 nodes 
 				min=Long.parseLong(childData);
 				whoisLazy=this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr;
 				//if(Long.parseLong(childNames[i].split("Server")[1])==1)
@@ -318,7 +317,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			//TODO: get whoisLazy client port
 			LOG.info("I am "+this.getState()+" "+childNames[i]+":"+this.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
 		 }
-		 System.out.println("\n\n\u001B[31m"+whoisLazy+" "+min+"\u001B[0m\n\n");
+		 System.out.println("\n\n\u001B[31mLazy: "+whoisLazy+" has clients:"+min+"\u001B[0m\n\n");
 		 if ((this.cnxionState-min) >= this.threshold)
 		 {
 			 //panpap: Get the connected clients and choose the Client that sent the less packets
