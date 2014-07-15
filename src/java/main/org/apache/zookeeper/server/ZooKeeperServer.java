@@ -401,11 +401,11 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 		if (this.zkDb.dataTree.getNode(newnode)!=null)
 		{
 			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
-			LOG.info("\u001B[31mpanpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients+"\u001B[0m");
+			//LOG.info("\u001B[31mpanpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients+"\u001B[0m");
 		}
 		else
 		{				
-			LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
+			//LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
 			zq.insertPersistent(newnode, clients.toString().getBytes());
 		}
     	}
