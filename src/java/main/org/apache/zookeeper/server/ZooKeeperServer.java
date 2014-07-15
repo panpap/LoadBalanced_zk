@@ -90,7 +90,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     }
     
     //panpap was there
-    final protected long threshold=2;
+    final protected long threshold=500;
     Map<Long, QuorumServer> serverMap=null;
 
     
