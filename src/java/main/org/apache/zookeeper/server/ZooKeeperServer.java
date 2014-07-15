@@ -271,7 +271,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private void makeLBCheck() throws NumberFormatException, UnsupportedEncodingException
     {
     	String nodeName="/state";
-    	ArrayList<InetSocketAddress> clnWatchers=this.zkDb.dataTree.getWatchersAddress(); 
+    	ArrayList<InetSocketAddress> dataWatchers=this.zkDb.dataTree.getWatchersAddress(); 
     	System.out.println("\n\n\n\n\n\n TTTTTTT "+clnWatchers.size()+" "+System.currentTimeMillis()+"\n\n\n\n\n");
 
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
