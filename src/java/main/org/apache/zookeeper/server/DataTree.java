@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashSet;
 
 import org.apache.jute.Index;
 import org.apache.jute.InputArchive;
