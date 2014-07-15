@@ -287,7 +287,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 	    	}
     		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
     		{
-    			System.out.println("\n\n\u001B[31m"+Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
+    			System.out.println("\n\n\u001B[31m grafei: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
     		//}
