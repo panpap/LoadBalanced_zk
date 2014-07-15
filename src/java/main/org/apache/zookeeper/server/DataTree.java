@@ -641,7 +641,7 @@ public class DataTree {
 	//System.out.println("WAtch Sizee: "+ dataWatches.size() + " childWatches: "+ childWatches.size());
 	ArrayList myarr=dataWatches.getWatchersClients();
 	myarr.addAll(childWatches.getWatchersClients());
-	HashSet clnWatchers=myarr;
+	HashSet clnWatchers=new HashSet(myarr);
 	return clnWatchers; 
     }
     
