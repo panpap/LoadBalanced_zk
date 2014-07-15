@@ -637,6 +637,7 @@ public class DataTree {
     }
     
 	public ArrayList<InetSocketAddress> getWatchersAddress() {
+		System.out.println("WAtch Sizee: "+ dataWatches.size() + " childWatches: "+ childWatches.size());
 		return dataWatches.getWatchersClients();
 	}
     
