@@ -18,6 +18,7 @@
 
 package org.apache.zookeeper.server;
 
+import java.util.HashSet;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
