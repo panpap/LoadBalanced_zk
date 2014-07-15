@@ -636,10 +636,13 @@ public class DataTree {
     	dataWatches.triggerSpecificWatch(EventType.MoveToServer,lazyClient,whoisLazy);
     }
     
-	public ArrayList<InetSocketAddress> getWatchersAddress() {
-		System.out.println("WAtch Sizee: "+ dataWatches.size() + " childWatches: "+ childWatches.size());
-		return dataWatches.getWatchersClients();
-	}
+    public HashSet getWatchersAddress() {
+	//System.out.println("WAtch Sizee: "+ dataWatches.size() + " childWatches: "+ childWatches.size());
+	ArrayList myarr=dataWatches.getWatchersClients();
+	myarr.addAll(childWatches.getWatchersClients());
+	HashSet clnWatchers=myarr;
+	return clnWatchers; 
+    }
     
     
     /**
