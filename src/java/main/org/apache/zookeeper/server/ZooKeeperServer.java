@@ -287,11 +287,12 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 	    	}
     		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
     		{
-    			System.out.println("\n\n\u001B[31m grafei: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
+    			System.out.println("\n\n\u001B[31m Molis grapsa: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
+
     		//}
-    		System.out.println("\n\nPeriodic 10 sec Load Balancer check: "+this.cnxionState);
+    		//System.out.println("\n\nPeriodic 10 sec Load Balancer check: "+this.cnxionState);
     		//panpap: Check if Load Balance is needed.
 		Set<String> children = this.zkDb.dataTree.getNode(nodeName).getChildren();
 		LOG.info("panpap: Current state: ");
