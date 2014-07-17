@@ -275,7 +275,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	//panpap: Gets all watchers either dataWatchers or childWatchers
     	HashSet<InetSocketAddress> watchers=this.zkDb.dataTree.getWatchersAddress(); 
     	ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
-    	System.out.println("\n\n\n\n\n\n TTTTTTT "+clnWatchers.size()+" "+System.currentTimeMillis()+"\n\n\n\n\n");
+    	//System.out.println("\n\n\n\n\n\n TTTTTTT "+clnWatchers.size()+" "+System.currentTimeMillis()+"\n\n\n\n\n");
 
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
