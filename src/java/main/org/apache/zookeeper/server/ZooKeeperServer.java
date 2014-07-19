@@ -276,11 +276,10 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	HashSet<InetSocketAddress> watchers=this.zkDb.dataTree.getWatchersAddress(); 
     	ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
     	//System.out.println("\n\n\n\n\n\n TTTTTTT "+clnWatchers.size()+" "+System.currentTimeMillis()+"\n\n\n\n\n");
-
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
     		
-    	    	if(getMyStatusNodeData()==null)
+    	    if(getMyStatusNodeData()==null)
 	    	{
 	    		System.out.println("\n\n\u001B[31mNULLLLLLLLLLL\u001B[0m\n\n");	
 	    		updateState();
@@ -289,8 +288,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     		{
     			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
     			updateState();
-    			System.out.println("\n\n\u001B[31m Molis grapsa: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
-
     		//}
     		//System.out.println("\n\nPeriodic 10 sec Load Balancer check: "+this.cnxionState);
     		//panpap: Check if Load Balance is needed.
@@ -403,16 +400,25 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	if (theStatenode!=null && myId!=-1)
     	{
     		ZooQuorum zq = new ZooQuorum();
-		if (this.zkDb.dataTree.getNode(newnode)!=null)
-		{
-			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
-			//LOG.info("\u001B[31mpanpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients+"\u001B[0m");
-		}
-		else
-		{				
-			//LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
-			zq.insertPersistent(newnode, clients.toString().getBytes());
-		}
+    		if (this.zkDb.dataTree.getNode(newnode)!=null)
+    		{
+    			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
+    			try {
+					System.out.println("\n\n\u001B[31m Molis grapsa: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\u001B[0m\n\n");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			//LOG.info("\u001B[31mpanpap: state znode EXISTS "+newnode+" AND its data has been changed to "+clients+"\u001B[0m");
+    		}
+			else
+			{				
+				//LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
+				zq.insertPersistent(newnode, clients.toString().getBytes());
+			}
     	}
     }
     
