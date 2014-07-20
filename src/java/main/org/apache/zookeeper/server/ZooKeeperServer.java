@@ -158,6 +158,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
      * @throws IOException
      */
     public ZooKeeperServer() {
+    	new printer(null);
         serverStats = new ServerStats(this);
         updateState();
     }
@@ -171,6 +172,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     public ZooKeeperServer(FileTxnSnapLog txnLogFactory, int tickTime,
             int minSessionTimeout, int maxSessionTimeout,
             DataTreeBuilder treeBuilder, ZKDatabase zkDb) {
+    	new printer(null);
         serverStats = new ServerStats(this);
         this.txnLogFactory = txnLogFactory;
         this.zkDb = zkDb;
@@ -197,6 +199,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             DataTreeBuilder treeBuilder) throws IOException {
         this(txnLogFactory, tickTime, -1, -1, treeBuilder,
                 new ZKDatabase(txnLogFactory));
+        new printer(null);
         updateState();
     }
     
@@ -233,6 +236,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             throws IOException {
         this( new FileTxnSnapLog(snapDir, logDir),
                 tickTime, new BasicDataTreeBuilder());
+        new printer(null);
         updateState();
     }
 
@@ -247,6 +251,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     {
         this(txnLogFactory, DEFAULT_TICK_TIME, -1, -1, treeBuilder,
                 new ZKDatabase(txnLogFactory));
+        new printer(null);
         updateState();
     }
 
@@ -263,16 +268,25 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private static class printer{
     
     	public printer(String s)
-    	{
+    	{    			
     		PrintWriter out = null;
-    		java.util.Date date= new java.util.Date();
-    		try{
-    			out = new PrintWriter(new BufferedWriter(new FileWriter("LB_log.txt", true)));
-    			out.println(new Timestamp(date.getTime())+s);
-    		} catch (IOException e) {
-    			e.printStackTrace();
+    		boolean append=false;
+    		if(s==null)
+    		{	
+    			append=false;
+    			s="Starting new session...";
     		}
-    		finally{out.close();}
+    		else
+    			append=true;
+			java.util.Date date= new java.util.Date();
+			try{
+				out = new PrintWriter(new BufferedWriter(new FileWriter("LB_log.txt", append)));
+			} catch (IOException e) {
+				e.printStackTrace();
+				out.close();
+				return;
+			}
+			out.println(new Timestamp(date.getTime())+" "+s);
     	}
     }
     
@@ -287,7 +301,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     		
     	    if(getMyStatusNodeData()==null)
 	    	{
-    	    	new printer("\n\n\u001B[31mNULLLLLLLLLLL\u001B[0m\n\n");	
+    	    	new printer("NULL state node\n");	
 	    		updateState();
 	    	}
     	    else
@@ -422,7 +436,8 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     		myId=getServerId();    	
     		newnode=nodeName+"/Server"+this.getServerId();
     	}
-    	catch(NullPointerException e){ System.out.println("\n\nINITIALIZING...NT READY\n\n");}		
+    	catch(NullPointerException e){
+    	new printer("INITIALIZING...NT READY\n");}		
     	DataNode theStatenode = this.zkDb.dataTree.getNode(nodeName);
     	if (theStatenode!=null && myId!=-1)
     	{
