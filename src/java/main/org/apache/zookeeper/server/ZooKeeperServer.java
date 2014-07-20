@@ -146,8 +146,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private final ServerStats serverStats;
 
     void removeCnxn(ServerCnxn cnxn) {
-    	System.out.println("\u001B[31mpanpap: REMOVECNXN\u001B[0m");
-    	updateState();
+    	System.out.println("\u001B[31mpanpap: REMOVECNN\u001B[0m");
         zkDb.removeCnxn(cnxn);
     }
  
@@ -453,12 +452,15 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
     			try {
     				new printer("Molis egrapsa: "+clients+" state:"+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\n");
-    			} catch (NumberFormatException e) {
-    				e.printStackTrace();
-    			}
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				}
     		}
 			else
-				zq.insertPersistent(newnode, clients.toString().getBytes());	
+			{				
+				//LOG.info("\u001B[31mpanpap: state znode NOT FOUND... Ready to construct "+newnode+"\u001B[0m");  
+				zq.insertPersistent(newnode, clients.toString().getBytes());
+			}
     	}
     }
     
@@ -504,7 +506,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             // XXX: Is lastProcessedZxid really the best thing to use?
             killSession(session, zkDb.getDataTreeLastProcessedZxid());
         }
-        updateState();
+
         // Make a clean snapshot
         takeSnapshot();
     }
@@ -563,7 +565,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         if (sessionTracker != null) {
             sessionTracker.removeSession(sessionId);
         }
-        updateState();
     }
 
     public void expire(Session session) {
