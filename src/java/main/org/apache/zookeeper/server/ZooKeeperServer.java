@@ -292,12 +292,10 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     }
     
     //XXX panpap was here
-    boolean flag=true;
-    private long cnxionState=0;
     private void makeLBCheck()
     {
     	//panpap: Gets all watchers either dataWatchers or childWatchers
-    	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
+    	//if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
     		
     	    if(getMyStatusNodeData()==null)
@@ -309,7 +307,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     		{
     	    	if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
     	    	{
-    	    		this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
+    	    		new printer(Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size());
     	    		updateState();
     	    		//panpap: go for re-balance
     	    		Thread t= new Thread(new reBalancer(this));
@@ -338,7 +336,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			//LOG.info("panpap: Current state: ");
 			String[] childNames = children.toArray(new String[children.size()]);
 			String childData="";
-			long min=this.zks.cnxionState;
+			long min=this.zks.zkDb.dataTree.getWatchersAddress().size();
 			InetSocketAddress whoisLazy = this.zks.getServerCnxnFactory().getLocalAddress();
 			//panpap: Check other peers' load and find the most lazy server 
 			for(int i=0;i<childNames.length;i++)
@@ -363,15 +361,16 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				}
 				new printer("I am "+this.zks.getState()+" "+childNames[i]+":"+this.zks.serverMap.get(Long.parseLong(childNames[i].split("Server")[1])).addr+" has "+Long.parseLong(childData)+" clients");
 			}
-			new printer("Lazy: "+whoisLazy+" has clients:"+min+"\n");
+			//new printer("Lazy: "+whoisLazy+" has clients:"+min+"\n");
 			//panpap: Is re-balance needed?
-			if ((this.zks.cnxionState-min) >= this.threshold)
+			int cnxionState = this.zks.zkDb.dataTree.getWatchersAddress().size();
+			if ((cnxionState-min) >= this.threshold)
 			{
 				//panpap: Get the connected clients and choose the Client that sent the less packets
 				long minPackets=-1;
 				InetSocketAddress lazyClient=null;
 				//LOG.info("panpap: My current Watchers:");
-				for(int i=0;i<this.zks.cnxionState;i++)
+				for(int i=0;i<cnxionState;i++)
 				{
 					InetSocketAddress elem = clnWatchers.get(i);
 					if((minPackets<0)&&(lazyClient==null))
@@ -431,7 +430,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	String nodeName="/state";
     	String newnode="";
     	long myId=-1;
-    	Long clients=this.cnxionState;
     	LOG.info("panpap: update internal STATE");
     	try{
     		myId=getServerId();    	
@@ -443,11 +441,14 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	if (theStatenode!=null && myId!=-1)
     	{
     		ZooQuorum zq = new ZooQuorum();
-    		if (this.zkDb.dataTree.getNode(newnode)!=null)
+    		HashSet <InetSocketAddress>watchers = this.zkDb.dataTree.getWatchersAddress();
+    	    ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
+    	    Integer clients = clnWatchers.size();
+    		if (getMyStatusNodeData()!=null)
     		{
     			zq.setData(newnode, clients.toString().getBytes(),this.zkDb.dataTree.getNode(newnode).stat.getVersion());
     			try {
-    				new printer("Molis grapsa: "+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\n");
+    				new printer("Molis egrapsa: "+clients+" state:"+Long.parseLong(getMyStatusNodeData())+" actual:"+this.zkDb.dataTree.getWatchersAddress().size()+"\n");
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 				}
