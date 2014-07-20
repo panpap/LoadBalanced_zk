@@ -48,7 +48,6 @@ import org.apache.jute.Record;
 import org.apache.zookeeper.Environment;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.SessionExpiredException;
 import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.data.ACL;
@@ -147,6 +146,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private final ServerStats serverStats;
 
     void removeCnxn(ServerCnxn cnxn) {
+    	System.out.println("\u001B[31mpanpap: REMOVECNXN\u001B[0m");
         zkDb.removeCnxn(cnxn);
     }
  
@@ -294,10 +294,12 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     //XXX panpap was here
     private void makeLBCheck()
     {
+    	java.util.Date date= new java.util.Date();
+    	System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime())+"\u001B[0m");
     	//panpap: Gets all watchers either dataWatchers or childWatchers
-    	//if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
+    	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
-    		
+			//System.out.println("\u001B[31mpanpap: make LB check\u001B[0m");
     	    if(getMyStatusNodeData()==null)
 	    	{
     	    	new printer("NULL state node\n");	
@@ -426,6 +428,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
    */ 
     
     
+    //kostizei 300ms se localhost
     private void updateState(){  
     	String nodeName="/state";
     	String newnode="";
@@ -1076,7 +1079,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         // session is setup
         cnxn.disableRecv();
         long sessionId = connReq.getSessionId();
-        //XXX PANPAP: add client to log
         if (sessionId != 0) {
             long clientSessionId = connReq.getSessionId();
             LOG.info("Client attempting to renew session 0x"
