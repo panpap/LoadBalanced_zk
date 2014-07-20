@@ -290,22 +290,27 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     	    	new printer("\n\n\u001B[31mNULLLLLLLLLLL\u001B[0m\n\n");	
 	    		updateState();
 	    	}
-    		if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
+    	    else
     		{
-    			this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
-    			updateState();
-    			Thread t= new Thread(new loadBalancer(this));
-	    	}
+    	    	if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
+    	    	{
+    	    		this.cnxionState=this.zkDb.dataTree.getWatchersAddress().size();
+    	    		updateState();
+    	    		//panpap: go for re-balance
+    	    		Thread t= new Thread(new reBalancer(this));
+    	    		t.start();
+    	    	}
+    		}
     	}
     }
     
 
-    private static class loadBalancer implements Runnable {
+    private static class reBalancer implements Runnable {
 	    private int count=0;
 	    final protected long threshold=500; //TODO: fine-tune that param
 		private ZooKeeperServer zks;
 		
-	    public loadBalancer(ZooKeeperServer zooKeeperServer) {
+	    public reBalancer(ZooKeeperServer zooKeeperServer) {
 			this.zks=zooKeeperServer;
 		}
 	
