@@ -287,6 +287,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 				return;
 			}
 			out.println(new Timestamp(date.getTime())+" "+s);
+			out.close();
     	}
     }
     
