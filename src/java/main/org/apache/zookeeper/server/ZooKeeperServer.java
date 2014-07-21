@@ -296,21 +296,22 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private void makeLBCheck()
     {
     	java.util.Date date= new java.util.Date();
-    	System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime()) +"\u001B[0m");
     	//panpap: Gets all watchers either dataWatchers or childWatchers
-    	
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
-			//System.out.println("\u001B[31mpanpap: make LB check\u001B[0m");
-    	    if(getMyStatusNodeData()==null)
+       	    if(getMyStatusNodeData()==null)
 	    	{
     	    	new printer("NULL state node\n");	
+    	    	HashSet <InetSocketAddress>watchers = this.zkDb.dataTree.getWatchersAddress();
+        		ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
+        		System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime())+" st=NULL Act="+clnWatchers.size()+"\u001B[0m");
 	    		updateState();
 	    	}
     	    else
     		{
     	    	HashSet <InetSocketAddress>watchers = this.zkDb.dataTree.getWatchersAddress();
-    	    	ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
+        		ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
+        		System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime())+" st="+Long.parseLong(getMyStatusNodeData())+" Act="+clnWatchers.size()+"\u001B[0m");
     	    	if(Long.parseLong(getMyStatusNodeData())!=clnWatchers.size())
     	    	{
     	    		new printer(Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size());
