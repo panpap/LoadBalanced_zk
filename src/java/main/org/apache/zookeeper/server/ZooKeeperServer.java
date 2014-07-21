@@ -571,7 +571,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         if (sessionTracker != null) {
             sessionTracker.removeSession(sessionId);
         }
-        updateState();
     }
 
     public void expire(Session session) {
@@ -672,7 +671,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 
     public void shutdown() {
         LOG.info("shutting down");
-        updateState();
+
         // new RuntimeException("Calling shutdown").printStackTrace();
         this.running = false;
         // Since sessionTracker and syncThreads poll we just have to
@@ -687,6 +686,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         if (zkDb != null) {
             zkDb.clear();
         }
+
         unregisterJMX();
     }
 
@@ -862,12 +862,10 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             LOG.warn("Exception while establishing session, closing", e);
             cnxn.close();
         }
-        updateState();
     }
     
     public void closeSession(ServerCnxn cnxn, RequestHeader requestHeader) {
         closeSession(cnxn.getSessionId());
-        updateState();
     }
 
     public long getServerId() {
