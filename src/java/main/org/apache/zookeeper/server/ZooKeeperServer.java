@@ -178,10 +178,9 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         this.txnLogFactory = txnLogFactory;
         this.zkDb = zkDb;
         this.tickTime = tickTime;
-        updateState();
         this.minSessionTimeout = minSessionTimeout;
         this.maxSessionTimeout = maxSessionTimeout;
-        
+        updateState();
         LOG.info("Created server with tickTime " + tickTime
                 + " minSessionTimeout " + getMinSessionTimeout()
                 + " maxSessionTimeout " + getMaxSessionTimeout()
@@ -492,6 +491,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
      */
     public void setZKDatabase(ZKDatabase zkDb) {
        this.zkDb = zkDb;
+       updateState();
     }
     
     /**
@@ -511,9 +511,9 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             // XXX: Is lastProcessedZxid really the best thing to use?
             killSession(session, zkDb.getDataTreeLastProcessedZxid());
         }
-
         // Make a clean snapshot
         takeSnapshot();
+        updateState();
     }
 
     public void takeSnapshot(){
@@ -570,6 +570,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         if (sessionTracker != null) {
             sessionTracker.removeSession(sessionId);
         }
+        updateState();
     }
 
     public void expire(Session session) {
