@@ -148,6 +148,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     void removeCnxn(ServerCnxn cnxn) {
     	System.out.println("\u001B[31mpanpap: REMOVECNN\u001B[0m");
         zkDb.removeCnxn(cnxn);
+        updateState();
     }
  
     /**
@@ -295,8 +296,9 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
     private void makeLBCheck()
     {
     	java.util.Date date= new java.util.Date();
-    	System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime())+"\u001B[0m");
+    	System.out.println("\u001B[31mpanpap: "+new Timestamp(date.getTime()) +"\u001B[0m");
     	//panpap: Gets all watchers either dataWatchers or childWatchers
+    	
     	if ((serverStats()!=null)&&(getServerCnxnFactory()!=null)&&(this.serverMap!=null))
     	{
 			//System.out.println("\u001B[31mpanpap: make LB check\u001B[0m");
@@ -307,7 +309,9 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 	    	}
     	    else
     		{
-    	    	if(Long.parseLong(getMyStatusNodeData())!=this.zkDb.dataTree.getWatchersAddress().size())
+    	    	HashSet <InetSocketAddress>watchers = this.zkDb.dataTree.getWatchersAddress();
+    	    	ArrayList<InetSocketAddress> clnWatchers= new ArrayList<InetSocketAddress>(watchers);
+    	    	if(Long.parseLong(getMyStatusNodeData())!=clnWatchers.size())
     	    	{
     	    		new printer(Long.parseLong(getMyStatusNodeData())+" "+this.zkDb.dataTree.getWatchersAddress().size());
     	    		updateState();
@@ -338,7 +342,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 			//LOG.info("panpap: Current state: ");
 			String[] childNames = children.toArray(new String[children.size()]);
 			String childData="";
-			long min=this.zks.zkDb.dataTree.getWatchersAddress().size();
+			long min=clnWatchers.size(); //panpap: current open connections
 			InetSocketAddress whoisLazy = this.zks.getServerCnxnFactory().getLocalAddress();
 			//panpap: Check other peers' load and find the most lazy server 
 			for(int i=0;i<childNames.length;i++)
@@ -428,12 +432,12 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
    */ 
     
     
-    //kostizei 300ms se localhost
+    //kostizei 400ms se localhost
     private void updateState(){  
     	String nodeName="/state";
     	String newnode="";
     	long myId=-1;
-    	LOG.info("panpap: update internal STATE");
+    	//LOG.info("panpap: update internal STATE");
     	try{
     		myId=getServerId();    	
     		newnode=nodeName+"/Server"+this.getServerId();
