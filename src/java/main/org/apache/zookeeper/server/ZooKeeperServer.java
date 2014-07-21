@@ -514,7 +514,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
 
         // Make a clean snapshot
         takeSnapshot();
-        updateState(); 
     }
 
     public void takeSnapshot(){
